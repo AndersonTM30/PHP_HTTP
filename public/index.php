@@ -3,9 +3,10 @@
     require __DIR__ . '/../vendor/autoload.php';
 
     // importação de classes
-    use Alura\Cursos\Controller\InterfaceControladorRequisicao;
     use Nyholm\Psr7\Factory\Psr17Factory;
     use Nyholm\Psr7Server\ServerRequestCreator;
+    use Psr\Http\Server\RequestHandlerInterface;
+
 
     $caminho = $_SERVER['PATH_INFO'];//caminho da rota
     $rotas = require __DIR__ . '/../config/routes.php';// array das rotas
@@ -35,9 +36,9 @@
     $request = $creator->fromGlobals();
 
     $classeControladora = $rotas[$caminho];
-    /** @var InterfaceControladorRequisicao $controler */
+    /** @var RequestHandlerInterface $controler */
     $controlador = new $classeControladora();// cria uma classe controladora
-    $resposta = $controlador->processaRequisicao($request);
+    $resposta = $controlador->handle($request);
 
     foreach($resposta->getHeaders() AS $name => $value){
         foreach($value as $value) {
